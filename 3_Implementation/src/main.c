@@ -1,156 +1,364 @@
+//LEARNPROGRAMO - PROGRAMMING MADE SIMPLE
 #include<stdio.h>
+
+#include<conio.h>
+
 #include<string.h>
+
+#include<process.h>
+
 #include<stdlib.h>
 
+#include<dos.h>
 
-struct user {
-	char phone[50];
-	char ac[50];
-	char password[50];
-	float balance;
-};
+struct contact
 
-int main(){
-	struct user user,usr;
-	char filename[50],phone[50],password[50],phone2[50];
-	FILE *fp,*fptr;
-	int opt,choice;
-	int amount;
-	char cont = 'y';
-	printf("\nWhat do you want to do?");
-	printf("\n\n1.Register your account");
-	printf("\n2.Login to your account");
+{
 
-	printf("\n\nPlease enter your choice:\t");
-	scanf("%d",&opt);
-	if(opt == 1){
-		system("clear");
-		printf("\nEnter your account number:\t");
-		scanf("%s",user.ac);
-		printf("Enter your phone number:\t");
-		scanf("%s",user.phone);
-		printf("Enter your new password:\t");
-		scanf("%s",user.password);
-		user.balance=0;
-		stpcpy(filename,user.phone);
-		fp=fopen(strcat(filename,".dat"),"w");
-		fwrite(&user,sizeof(user),1,fp);
-		if(fwrite != 0){
-			printf("Succesfully registered");
-		}
-	}
-	else if(opt == 2){
-		system("clear");
-		printf("\nPhone No.:\t");
-		scanf("%s",phone);
-		printf("Password:\t");
-		scanf("%s",password);
-		fp = fopen(strcat(phone,".dat"),"r");
-		if(fp == NULL) printf("Account number not registered");
-		else {
-			fread(&user,sizeof(struct user),1,fp);
-			fclose(fp);
-			if(!strcmp(password,user.password)){
-				while(cont == 'y'){
-				system("clear");
-				printf("\n\tWelcome %s",user.phone);
-				printf("\nPress 1 for balance inquiry");
-				printf("\nPress 2 for adding fund");
-				printf("\nPress 3 for cash withdraw");
-				printf("\nPress 4 for online transfer");
-				printf("\nPress 5 for changing password\n\n");
-				scanf("%d",&choice);
-				switch(choice){
-					case 1:
-						printf("Your current balance is Rs. %.2f",user.balance);
-						break;
+    long ph;
 
-					case 2:
-						system("clear");
-						printf("Enter amount to be added:\t");
-						scanf("%d",&amount);
-						user.balance += amount;
-						fp = fopen(phone,"w");
-						fwrite(&user,sizeof(struct user),1,fp);
-						if(fwrite !=0) printf("\n\nYou have depostied Rs.%d",amount);
-						fclose(fp);
-						break;
+    char name[20],add[20],email[30];
 
-					case 3:
-						system("clear");
-						printf("Enter withdrawl amount:\t");
-						scanf("%d",&amount);
-						if(amount % 500 != 0) printf("\nSorry amount should be multiple of 500");
-						else if(amount>user.balance) printf("\nSorry insufficeint balance");
-						else {
-							user.balance -= amount;
-						fp = fopen(phone,"w");
-						fwrite(&user,sizeof(struct user),1,fp);
-						if(fwrite !=0) printf("\n\nYou have withdrawn Rs.%d",amount);
-						fclose(fp);
-						}
-						break;
-					
-					case 4:
-						printf("Please enter the phone number to trasnfer balance:\t");
-						scanf("%s",phone);
-						printf("Enter the amount to transfer:\t");
-						scanf("%d",&amount);
-						if(amount > user.balance) printf("\nSorry insufficent balance");
-						else {
-							fptr = fopen(strcat(phone,".dat"),"r");
-							if(fptr==NULL) printf("Sorry number is not registered");
-							else {
-								fread(&usr,sizeof(struct user),1,fptr);
-								fclose(fptr);
-							
-								usr.balance += amount;
-								
-								fptr = fopen(phone,"w");
-								fwrite(&usr,sizeof(struct user),1,fptr);
-								if(fwrite != 0){
-								// 	printf("ACcount:%s",usr.ac);
-								// printf("\npassword%s",usr.password);
-								// printf("\nphone%s",usr.phone);
-								// printf("\nbalance%f",usr.balance);
-									printf("Your trasfer is completed. You have trasnfered Rs.%d to %s",amount,usr.phone);
-									fclose(fptr);
-									user.balance -= amount;
-									strcpy(filename,user.phone);
-									fp = fopen(strcat(filename,".dat"),"w");
-									fwrite(&user,sizeof(struct user),1,fp);
-									fclose(fp);
-								}
-							}
-						}
-						break;
-					case 5:
-						printf("\n\nPlease enter your old password:\t");
-						scanf("%s",password);
-						if(!strcmp(password,user.password)){
-							printf("\n\nPlease enter your new password:\t");
-							scanf("%s",password);
-							strcpy(user.password,password);
-							strcpy(filename,user.phone);
-							fp = fopen(strcat(filename,".dat"),"w");
-							fwrite(&user,sizeof(struct user),1,fp);
-							fclose(fp);	
-							printf("\nPassword succesfullly changed");
-						}else printf("\nSorry your password is wrong");
-					
-					default:
-					break;
-				}//switch ends here
-				printf("\n\nDo you want to continue?[y/n]:\t");
-				scanf("%s",&cont);
-				}
-			}
-			else {
-				printf("Invalid password");
-			}	
-		}
-		printf("\n\n***Thank you for banking with ADV. bank***\n\n");
-	}
-	
-	return 0;
+} list;
+
+char query[20],name[20];
+
+FILE *fp, *ft;
+
+int i,n,ch,l,found;
+
+int main()
+
+{
+
+main:
+
+    system("cls");    /* ************Main menu ***********************  */
+
+    printf("\n\t **** Welcome to Contact Management System ****");
+
+    printf("\n\n\n\t\t\tMAIN MENU\n\t\t=====================\n\t\t[1] Add a new Contact\n\t\t[2] List all Contacts\n\t\t[3] Search for contact\n\t\t[4] Edit a Contact\n\t\t[5] Delete a Contact\n\t\t[0] Exit\n\t\t=================\n\t\t");
+
+    printf("Enter the choice:");
+
+    scanf("%d",&ch);
+
+    switch(ch)
+
+    {
+
+    case 0:
+
+        printf("\n\n\t\tAre you sure you want to exit?");
+
+        break;
+
+        /* *********************Add new contacts************  */
+
+    case 1:
+
+        system("cls");
+
+        fp=fopen("contact.dll","a");
+
+        for (;;)
+
+        {
+            fflush(stdin);
+
+            printf("To exit enter blank space in the name input\nName (Use identical):");
+
+            scanf("%[^\n]",&list.name);
+
+            if(stricmp(list.name,"")==0 || stricmp(list.name," ")==0)
+
+                break;
+
+            fflush(stdin);
+
+            printf("Phone:");
+
+            scanf("%ld",&list.ph);
+
+            fflush(stdin);
+
+            printf("address:");
+
+            scanf("%[^\n]",&list.add);
+
+            fflush(stdin);
+
+            printf("email address:");
+
+            gets(list.email);
+
+            printf("\n");
+
+            fwrite(&list,sizeof(list),1,fp);
+
+        }
+
+        fclose(fp);
+
+        break;
+
+        /* *********************list of contacts*************************  */
+
+    case 2:
+
+        system("cls");
+
+        printf("\n\t\t================================\n\t\t\tLIST OF CONTACTS\n\t\t================================\n\nName\t\tPhone No\t    Address\t\tE-mail ad.\n=================================================================\n\n");
+
+        for(i=97; i<=122; i=i+1)
+
+        {
+
+            fp=fopen("contact.dll","r");
+
+            fflush(stdin);
+
+            found=0;
+
+            while(fread(&list,sizeof(list),1,fp)==1)
+
+            {
+
+                if(list.name[0]==i || list.name[0]==i-32)
+
+                {
+
+                    printf("\nName\t: %s\nPhone\t: %ld\nAddress\t: %s\nEmail\t: %s\n",list.name,
+
+                           list.ph,list.add,list.email);
+
+                    found++;
+
+                }
+
+            }
+
+            if(found!=0)
+
+            {
+                printf("=========================================================== [%c]-(%d)\n\n",i-32,found);
+
+                getch();
+            }
+
+            fclose(fp);
+
+        }
+
+        break;
+
+        /* *******************search contacts**********************  */
+
+    case 3:
+
+        system("cls");
+
+        do
+
+        {
+
+            found=0;
+
+            printf("\n\n\t..::CONTACT SEARCH\n\t===========================\n\t..::Name of contact to search: ");
+
+            fflush(stdin);
+
+            scanf("%[^\n]",&query);
+
+            l=strlen(query);
+
+            fp=fopen("contact.dll","r");
+
+            system("cls");
+
+            printf("\n\n..::Search result for '%s' \n===================================================\n",query);
+
+            while(fread(&list,sizeof(list),1,fp)==1)
+
+            {
+
+                for(i=0; i<=l; i++)
+
+                    name[i]=list.name[i];
+
+                name[l]='\0';
+
+                if(stricmp(name,query)==0)
+
+                {
+
+                    printf("\n..::Name\t: %s\n..::Phone\t: %ld\n..::Address\t: %s\n..::Email\t: %s\n",list.name,list.ph,list.add,list.email);
+
+                    found++;
+
+                    if (found%4==0)
+
+                    {
+
+                        printf("..::Press any key to continue...");
+
+                        getch();
+
+                    }
+
+                }
+
+            }
+
+            if(found==0)
+
+                printf("\n..::No match found!");
+
+            else
+
+                printf("\n..::%d match(s) found!",found);
+
+            fclose(fp);
+
+            printf("\n ..::Try again?\n\n\t[1] Yes\t\t[0] No\n\t");
+
+            scanf("%d",&ch);
+
+        }
+        while(ch==1);
+
+        break;
+
+        /* *********************edit contacts************************/
+
+    case 4:
+
+        system("cls");
+
+        fp=fopen("contact.dll","r");
+
+        ft=fopen("temp.dat","w");
+
+        fflush(stdin);
+
+        printf("..::Edit contact\n===============================\n\n\t..::Enter the name of contact to edit:");
+
+        scanf("%[^\n]",name);
+
+        while(fread(&list,sizeof(list),1,fp)==1)
+
+        {
+
+            if(stricmp(name,list.name)!=0)
+
+                fwrite(&list,sizeof(list),1,ft);
+
+        }
+
+        fflush(stdin);
+
+        printf("\n\n..::Editing '%s'\n\n",name);
+
+        printf("..::Name(Use identical):");
+
+        scanf("%[^\n]",&list.name);
+
+        fflush(stdin);
+
+        printf("..::Phone:");
+
+        scanf("%ld",&list.ph);
+
+        fflush(stdin);
+
+        printf("..::address:");
+
+        scanf("%[^\n]",&list.add);
+
+        fflush(stdin);
+
+        printf("..::email address:");
+
+        gets(list.email);
+
+        printf("\n");
+
+        fwrite(&list,sizeof(list),1,ft);
+
+        fclose(fp);
+
+        fclose(ft);
+
+        remove("contact.dll");
+
+        rename("temp.dat","contact.dll");
+
+        break;
+
+        /* ********************delete contacts**********************/
+
+    case 5:
+
+        system("cls");
+
+        fflush(stdin);
+
+        printf("\n\n\t..::DELETE A CONTACT\n\t==========================\n\t..::Enter the name of contact to delete:");
+
+        scanf("%[^\n]",&name);
+
+        fp=fopen("contact.dll","r");
+
+        ft=fopen("temp.dat","w");
+
+        while(fread(&list,sizeof(list),1,fp)!=0)
+
+            if (stricmp(name,list.name)!=0)
+
+                fwrite(&list,sizeof(list),1,ft);
+
+        fclose(fp);
+
+        fclose(ft);
+
+        remove("contact.dll");
+
+        rename("temp.dat","contact.dll");
+
+        break;
+
+    default:
+
+        printf("Invalid choice");
+
+        break;
+
+    }
+
+    printf("\n\n\n..::Enter the Choice:\n\n\t[1] Main Menu\t\t[0] Exit\n");
+
+    scanf("%d",&ch);
+
+    switch (ch)
+
+    {
+
+    case 1:
+
+        goto main;
+
+    case 0:
+
+        break;
+
+    default:
+
+        printf("Invalid choice");
+
+        break;
+
+    }
+
+    return 0;
+
 }
