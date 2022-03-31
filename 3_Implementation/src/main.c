@@ -1,364 +1,169 @@
-//LEARNPROGRAMO - PROGRAMMING MADE SIMPLE
-#include<stdio.h>
+#include <stdio.h> ///for input output functions like printf, scanf
+#include <stdlib.h>
+#include <conio.h>
+#include <windows.h> ///for windows related functions (not important)
+#include <string.h>  ///string operations
 
-#include<conio.h>
+/** List of Global Variable */
+COORD coord = {0,0}; /// top-left corner of window
 
-#include<string.h>
-
-#include<process.h>
-
-#include<stdlib.h>
-
-#include<dos.h>
-
-struct contact
-
+/**
+    function : gotoxy
+    @param input: x and y coordinates
+    @param output: moves the cursor in specified position of console
+*/
+void gotoxy(int x,int y)
 {
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+}
 
-    long ph;
-
-    char name[20],add[20],email[30];
-
-} list;
-
-char query[20],name[20];
-
-FILE *fp, *ft;
-
-int i,n,ch,l,found;
+/** Main function started */
 
 int main()
-
 {
+    FILE *fp, *ft; /// file pointers
+    char another, choice;
 
-main:
-
-    system("cls");    /* ************Main menu ***********************  */
-
-    printf("\n\t **** Welcome to Contact Management System ****");
-
-    printf("\n\n\n\t\t\tMAIN MENU\n\t\t=====================\n\t\t[1] Add a new Contact\n\t\t[2] List all Contacts\n\t\t[3] Search for contact\n\t\t[4] Edit a Contact\n\t\t[5] Delete a Contact\n\t\t[0] Exit\n\t\t=================\n\t\t");
-
-    printf("Enter the choice:");
-
-    scanf("%d",&ch);
-
-    switch(ch)
-
+    /** structure that represent a employee */
+    struct emp
     {
+        char name[40]; ///name of employee
+        int age; /// age of employee
+        float bs; /// basic salary of employee
+    };
 
-    case 0:
+    struct emp e; /// structure variable creation
 
-        printf("\n\n\t\tAre you sure you want to exit?");
+    char empname[40]; /// string to store name of the employee
 
-        break;
+    long int recsize; /// size of each record of employee
 
-        /* *********************Add new contacts************  */
-
-    case 1:
-
-        system("cls");
-
-        fp=fopen("contact.dll","a");
-
-        for (;;)
-
+    /** open the file in binary read and write mode
+    * if the file EMP.DAT already exists then it open that file in read write mode
+    * if the file doesn't exit it simply create a new copy
+    */
+    fp = fopen("EMP.DAT","rb+");
+    if(fp == NULL)
+    {
+        fp = fopen("EMP.DAT","wb+");
+        if(fp == NULL)
         {
-            fflush(stdin);
-
-            printf("To exit enter blank space in the name input\nName (Use identical):");
-
-            scanf("%[^\n]",&list.name);
-
-            if(stricmp(list.name,"")==0 || stricmp(list.name," ")==0)
-
-                break;
-
-            fflush(stdin);
-
-            printf("Phone:");
-
-            scanf("%ld",&list.ph);
-
-            fflush(stdin);
-
-            printf("address:");
-
-            scanf("%[^\n]",&list.add);
-
-            fflush(stdin);
-
-            printf("email address:");
-
-            gets(list.email);
-
-            printf("\n");
-
-            fwrite(&list,sizeof(list),1,fp);
-
+            printf("Connot open file");
+            exit(1);
         }
+    }
 
-        fclose(fp);
+    /// sizeo of each record i.e. size of structure variable e
+    recsize = sizeof(e);
 
-        break;
-
-        /* *********************list of contacts*************************  */
-
-    case 2:
-
-        system("cls");
-
-        printf("\n\t\t================================\n\t\t\tLIST OF CONTACTS\n\t\t================================\n\nName\t\tPhone No\t    Address\t\tE-mail ad.\n=================================================================\n\n");
-
-        for(i=97; i<=122; i=i+1)
-
+    /// infinite loop continues untile the break statement encounter
+    while(1)
+    {
+        system("cls"); ///clear the console window
+        gotoxy(30,10); /// move the cursor to postion 30, 10 from top-left corner
+        printf("1. Add Record"); /// option for add record
+        gotoxy(30,12);
+        printf("2. List Records"); /// option for showing existing record
+        gotoxy(30,14);
+        printf("3. Modify Records"); /// option for editing record
+        gotoxy(30,16);
+        printf("4. Delete Records"); /// option for deleting record
+        gotoxy(30,18);
+        printf("5. Exit"); /// exit from the program
+        gotoxy(30,20);
+        printf("Your Choice: "); /// enter the choice 1, 2, 3, 4, 5
+        fflush(stdin); /// flush the input buffer
+        choice  = getche(); /// get the input from keyboard
+        switch(choice)
         {
-
-            fp=fopen("contact.dll","r");
-
-            fflush(stdin);
-
-            found=0;
-
-            while(fread(&list,sizeof(list),1,fp)==1)
-
-            {
-
-                if(list.name[0]==i || list.name[0]==i-32)
-
-                {
-
-                    printf("\nName\t: %s\nPhone\t: %ld\nAddress\t: %s\nEmail\t: %s\n",list.name,
-
-                           list.ph,list.add,list.email);
-
-                    found++;
-
-                }
-
-            }
-
-            if(found!=0)
-
-            {
-                printf("=========================================================== [%c]-(%d)\n\n",i-32,found);
-
-                getch();
-            }
-
-            fclose(fp);
-
-        }
-
-        break;
-
-        /* *******************search contacts**********************  */
-
-    case 3:
-
-        system("cls");
-
-        do
-
-        {
-
-            found=0;
-
-            printf("\n\n\t..::CONTACT SEARCH\n\t===========================\n\t..::Name of contact to search: ");
-
-            fflush(stdin);
-
-            scanf("%[^\n]",&query);
-
-            l=strlen(query);
-
-            fp=fopen("contact.dll","r");
-
+        case '1':  /// if user press 1
             system("cls");
+            fseek(fp,0,SEEK_END); /// search the file and move cursor to end of the file
+            /// here 0 indicates moving 0 distance from the end of the file
 
-            printf("\n\n..::Search result for '%s' \n===================================================\n",query);
-
-            while(fread(&list,sizeof(list),1,fp)==1)
-
+            another = 'y';
+            while(another == 'y')  /// if user want to add another record
             {
+                printf("\nEnter name: ");
+                scanf("%s",e.name);
+                printf("\nEnter age: ");
+                scanf("%d", &e.age);
+                printf("\nEnter basic salary: ");
+                scanf("%f", &e.bs);
 
-                for(i=0; i<=l; i++)
+                fwrite(&e,recsize,1,fp); /// write the record in the file
 
-                    name[i]=list.name[i];
-
-                name[l]='\0';
-
-                if(stricmp(name,query)==0)
-
-                {
-
-                    printf("\n..::Name\t: %s\n..::Phone\t: %ld\n..::Address\t: %s\n..::Email\t: %s\n",list.name,list.ph,list.add,list.email);
-
-                    found++;
-
-                    if (found%4==0)
-
-                    {
-
-                        printf("..::Press any key to continue...");
-
-                        getch();
-
-                    }
-
-                }
-
+                printf("\nAdd another record(y/n) ");
+                fflush(stdin);
+                another = getche();
             }
+            break;
+        case '2':
+            system("cls");
+            rewind(fp); ///this moves file cursor to start of the file
+            while(fread(&e,recsize,1,fp)==1)  /// read the file and fetch the record one record per fetch
+            {
+                printf("\n%s %d %.2f",e.name,e.age,e.bs); /// print the name, age and basic salary
+            }
+            getch();
+            break;
 
-            if(found==0)
-
-                printf("\n..::No match found!");
-
-            else
-
-                printf("\n..::%d match(s) found!",found);
-
-            fclose(fp);
-
-            printf("\n ..::Try again?\n\n\t[1] Yes\t\t[0] No\n\t");
-
-            scanf("%d",&ch);
-
+        case '3':  /// if user press 3 then do editing existing record
+            system("cls");
+            another = 'y';
+            while(another == 'y')
+            {
+                printf("Enter the employee name to modify: ");
+                scanf("%s", empname);
+                rewind(fp);
+                while(fread(&e,recsize,1,fp)==1)  /// fetch all record from file
+                {
+                    if(strcmp(e.name,empname) == 0)  ///if entered name matches with that in file
+                    {
+                        printf("\nEnter new name,age and bs: ");
+                        scanf("%s%d%f",e.name,&e.age,&e.bs);
+                        fseek(fp,-recsize,SEEK_CUR); /// move the cursor 1 step back from current position
+                        fwrite(&e,recsize,1,fp); /// override the record
+                        break;
+                    }
+                }
+                printf("\nModify another record(y/n)");
+                fflush(stdin);
+                another = getche();
+            }
+            break;
+        case '4':
+            system("cls");
+            another = 'y';
+            while(another == 'y')
+            {
+                printf("\nEnter name of employee to delete: ");
+                scanf("%s",empname);
+                ft = fopen("Temp.dat","wb");  /// create a intermediate file for temporary storage
+                rewind(fp); /// move record to starting of file
+                while(fread(&e,recsize,1,fp) == 1)  /// read all records from file
+                {
+                    if(strcmp(e.name,empname) != 0)  /// if the entered record match
+                    {
+                        fwrite(&e,recsize,1,ft); /// move all records except the one that is to be deleted to temp file
+                    }
+                }
+                fclose(fp);
+                fclose(ft);
+                remove("EMP.DAT"); /// remove the orginal file
+                rename("Temp.dat","EMP.DAT"); /// rename the temp file to original file name
+                fp = fopen("EMP.DAT", "rb+");
+                printf("Delete another record(y/n)");
+                fflush(stdin);
+                another = getche();
+            }
+            break;
+        case '5':
+            fclose(fp);  /// close the file
+            exit(0); /// exit from the program
         }
-        while(ch==1);
-
-        break;
-
-        /* *********************edit contacts************************/
-
-    case 4:
-
-        system("cls");
-
-        fp=fopen("contact.dll","r");
-
-        ft=fopen("temp.dat","w");
-
-        fflush(stdin);
-
-        printf("..::Edit contact\n===============================\n\n\t..::Enter the name of contact to edit:");
-
-        scanf("%[^\n]",name);
-
-        while(fread(&list,sizeof(list),1,fp)==1)
-
-        {
-
-            if(stricmp(name,list.name)!=0)
-
-                fwrite(&list,sizeof(list),1,ft);
-
-        }
-
-        fflush(stdin);
-
-        printf("\n\n..::Editing '%s'\n\n",name);
-
-        printf("..::Name(Use identical):");
-
-        scanf("%[^\n]",&list.name);
-
-        fflush(stdin);
-
-        printf("..::Phone:");
-
-        scanf("%ld",&list.ph);
-
-        fflush(stdin);
-
-        printf("..::address:");
-
-        scanf("%[^\n]",&list.add);
-
-        fflush(stdin);
-
-        printf("..::email address:");
-
-        gets(list.email);
-
-        printf("\n");
-
-        fwrite(&list,sizeof(list),1,ft);
-
-        fclose(fp);
-
-        fclose(ft);
-
-        remove("contact.dll");
-
-        rename("temp.dat","contact.dll");
-
-        break;
-
-        /* ********************delete contacts**********************/
-
-    case 5:
-
-        system("cls");
-
-        fflush(stdin);
-
-        printf("\n\n\t..::DELETE A CONTACT\n\t==========================\n\t..::Enter the name of contact to delete:");
-
-        scanf("%[^\n]",&name);
-
-        fp=fopen("contact.dll","r");
-
-        ft=fopen("temp.dat","w");
-
-        while(fread(&list,sizeof(list),1,fp)!=0)
-
-            if (stricmp(name,list.name)!=0)
-
-                fwrite(&list,sizeof(list),1,ft);
-
-        fclose(fp);
-
-        fclose(ft);
-
-        remove("contact.dll");
-
-        rename("temp.dat","contact.dll");
-
-        break;
-
-    default:
-
-        printf("Invalid choice");
-
-        break;
-
     }
-
-    printf("\n\n\n..::Enter the Choice:\n\n\t[1] Main Menu\t\t[0] Exit\n");
-
-    scanf("%d",&ch);
-
-    switch (ch)
-
-    {
-
-    case 1:
-
-        goto main;
-
-    case 0:
-
-        break;
-
-    default:
-
-        printf("Invalid choice");
-
-        break;
-
-    }
-
     return 0;
-
 }
