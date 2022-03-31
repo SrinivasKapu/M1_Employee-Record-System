@@ -1,374 +1,170 @@
-#include <stdio.h>
+//LEARNPROGRAMO-PROGRAMMING MADE SIMPLE
+#include <stdio.h> ///for input output functions like printf, scanf
+#include <stdlib.h>
 #include <conio.h>
-#include <windows.h>
-#include <dos.h>
-#include <string.h>
-void menu(void);
-void password(void);
-void namefun(void);
-void searchfun(void);
-void listfun(void);
-void modifyfun(void);
-void deletefun(void);
-void exitfun(void);
-void gotoxy(int x,int y){
-	COORD c;
-	c.X=x;
-	c.Y=y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
+#include <windows.h> ///for windows related functions (not important)
+#include <string.h>  ///string operations
+
+/** List of Global Variable */
+COORD coord = {0,0}; /// top-left corner of window
+
+/**
+    function : gotoxy
+    @param input: x and y coordinates
+    @param output: moves the cursor in specified position of console
+*/
+void gotoxy(int x,int y)
+{
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
 }
 
-int main(){
-	system("color B");
-	password();
-	getch();	
-}
+/** Main function started */
 
-void namefun(){
-	system("cls");
-	gotoxy(31,4);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB NEW SECTION \xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xB3");
-	FILE *fptr;
-	char name[100];
-	char address[100];
-	char gmail[100];
-	double phone;
-	char gender[8];
-	fptr=fopen("srinu.txt","ab+");//ab+ gives us the ability of writing the function and add the second data in the existing one...
-	if(fptr==NULL){
-		printf("Failed to create the required file.");
-	}
-	else{
-		gotoxy(31,6);
-		printf("Name:\t");
-		gotoxy(52,6);
-		gets(name);
-		gotoxy(31,7);
-		printf("Address:\t");
-		gotoxy(52,7);
-		gets(address);
-		gotoxy(31,8);
-		printf("Gender:\t");
-		gotoxy(52,8);
-		gets(gender);
-		gotoxy(31,9);
-		printf("Gmail:\t");
-		gotoxy(52,9);
-		gets(gmail);
-		gotoxy(31,10);
-		printf("Phone Number:\t");
-		gotoxy(52,10);
-		scanf("%lf",&phone);
-		fprintf(fptr,"%s %s %s %s %.0lf\n",name,address,gender,gmail,phone);
-	}
-	fclose(fptr);
-	system("cls");
-	char ch;
-	gotoxy(31,4);
-	printf("Do you wanna add more datas.Press y for that:");
-	Sleep(1000);
-	fflush(stdin);
-	while((ch=getch())=='y'){
-		menu();
-	}
-}
+int main()
+{
+    FILE *fp, *ft; /// file pointers
+    char another, choice;
 
-void searchfun(){
-	FILE *fptr;
-	int flag=0;
-	int res;
-	char name[100];
-	char address[100];
-	char gmail[100];
-	double phone;
-	char gender[8];
-	char name1[100];
-	system("cls");
-	fflush(stdin);
-	gotoxy(18,2);
-	printf("\xDB\xDB\xDB Enter the name of the person you want to see the detail:: ");
-	gets(name1);
-	fptr=fopen("srinu.txt","r");
-	//fflush(stdin);
-	while(fscanf(fptr,"%s %s %s %s %lf\n",name,address,gender,gmail,&phone)!=EOF){
-		res=strcmp(name,name1);
-		if(res==0){
-			gotoxy(39,4);
-			printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB Record Found \xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xB3");
-			gotoxy(28,5);
-			printf("----------------------------------------");
-		gotoxy(31,6.5);
-		printf("\xB3\xB2\xB2\xB2 Name:\t%s",name);
-		gotoxy(31,7);
-		printf("\xB3\xB2\xB2\xB2 Address:\t%s",address);
-			gotoxy(31,8);
-		printf("\xB3\xB2\xB2\xB2 Gender:\t%s",gender);
-		gotoxy(31,9);
-		printf("\xB3\xB2\xB2\xB2 Gmail:\t%s",gmail);
-		gotoxy(31,10);
-		printf("\xB3\xB2\xB2\xB2 Phone Number:\t%.0lf",phone);
-		gotoxy(31,11);
-			printf("----------------------------------------");
-		flag=1;
-		Sleep(1000);
-			gotoxy(18,12);
-			printf("Enter E for menu option.");
-	while(getch()=='E'){
-		menu();
-	}
-	}
-}
-	if(flag==0){
-		system("cls");
-		gotoxy(39,4);
-		printf("No record found.");;
-		gotoxy(39,6);
-		printf("Enter a to enter file again or double y key to open menu section:");
-		if(getch()=='a'){
-			system("cls");
-			searchfun();
-		}
-	
-	}
-	
+    /** structure that represent a employee */
+    struct emp
+    {
+        char name[40]; ///name of employee
+        int age; /// age of employee
+        float bs; /// basic salary of employee
+    };
 
-	fclose(fptr);
-}
-void listfun(){
-		FILE *fptr;
-	char name[100],address[100],gmail[100],gender[8];
-	double phone;
-	int f;
-	fptr=fopen("srinu.txt","r");
-	system("cls");
-	gotoxy(31,2);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB LIST SECTION OPENED \xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xB3");
-	printf("\n");
-	while(fscanf(fptr,"%s %s %s %s %lf",name,address,gender,gmail,&phone)!=EOF){
-		
-			printf("------------------------------------------\n");
-		printf("Name:%s\n",name);
-		printf("Address:%s\n",address);
-		printf("Gender:%s\n",gender);
-		printf("Gmail:%s\n",gmail);
-		printf("Phone:%.0lf\n",phone);
-			f=1;
-				printf("------------------------------------------");
-				printf("\n\n");
-		}
-		Sleep(1000);
-		printf("Enter y for menu section:");
-		while(getch()=='y'){
-			menu();
-		}
-			fclose(fptr);
-			}
+    struct emp e; /// structure variable creation
 
+    char empname[40]; /// string to store name of the employee
 
+    long int recsize; /// size of each record of employee
 
-void modifyfun(){
-	FILE *fptr,*fptr1;
-	char name[100],address[100],gmail[100],gmail1[100],address1[100],name1[100],gender[8],gender1[8];
-	int res,f=0;
-	double phone,phone1;
-	fptr=fopen("srinu.txt","r");
-	fptr1=fopen("temp.txt","a");
-	system("cls");
-	gotoxy(31,4);
-	printf("Enter the name: ");
-	gets(name1);
-	system("cls");
-	while(fscanf(fptr,"%s %s %s %s %lf\n",name,address,gender,gmail,&phone)!=EOF){
-		res=strcmp(name,name1);
-		if(res==0)
-		{
-			f=1;
-			gotoxy(31,4);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB MODIFY SECTION OPENED \xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xB3");
-			gotoxy(31,6);
-			printf("Enter the new address:");
-			scanf("%s",address1);
-				gotoxy(31,7);
-			printf("Enter the gender:");
-			scanf("%s",gender1);
-			gotoxy(31,8);
-			printf("Enter the new gmail:");
-			scanf("%s",gmail1);
-			gotoxy(31,9);
-			printf("Enter the new phone number:");
-			scanf("%lf",&phone1);
-			fprintf(fptr1,"%s %s %s %s %.0lf\n",name,address1,gender1,gmail1,phone1);
-			
-		}else{
-			fprintf(fptr1,"%s %s %s %s %.0lf\n",name,address,gender,gmail,phone);
-		}
-	}
-	if(f==0){
-		printf("Record Not found.");
-			}
-	fclose(fptr);
-	fclose(fptr1);
-	fptr=fopen("srinu.txt","w");
-	fclose(fptr);
-	fptr=fopen("srinu.txt","a");
-	fptr1=fopen("temp.txt","r");
-	while(fscanf(fptr1,"%s %s %s %s %lf\n",name,address,gender,gmail,&phone)!=EOF){
-		fprintf(fptr,"%s %s %s %s %.0lf\n",name,address,gender,gmail,phone);
-		
-	}
-	
-	fclose(fptr);
-	fclose(fptr1);
-	fptr1=fopen("temp.txt","w");
-	fclose(fptr1);
-	printf("\n\nPress y for menu option.");
-	fflush(stdin);
-	if(getch()=='y'){
-		menu();
-	}
-}
-void deletefun(){
-	FILE *fptr,*fptr1;
-	char name[100],address[100],gmail[100],gmail1[100],address1[100],name1[100],gender[8];
-	int res,f=0;
-	double phone,phone1;
-	fptr=fopen("srinu.txt","r");
-	fptr1=fopen("temp.txt","a");
-	system("cls");
-	gotoxy(31,4);
-	printf("Enter the CONTACT name that you want to delete: ");
-	gets(name1);
-	system("cls");
-	while(fscanf(fptr,"%s %s %s %s %lf\n",name,address,gender,gmail,&phone)!=EOF){
-		res=strcmp(name,name1);
-		if(res==0)
-		{
-			f=1;
-			printf("Record deleted successfully");
-			
-		}else{
-			fprintf(fptr1,"%s %s %s %s %.0lf\n",name,address,gender,gmail,phone);
-		}
-	}
-	if(f==0){
-		printf("Record Not found.");
-			}
-	fclose(fptr);
-	fclose(fptr1);
-	fptr=fopen("srinu.txt","w");
-	fclose(fptr);
-	fptr=fopen("srinu.txt","a");
-	fptr1=fopen("temp.txt","r");
-	while(fscanf(fptr1,"%s %s %s %s %lf\n",name,address,gender,gmail,&phone)!=EOF){
-		fprintf(fptr,"%s %s %s %s %.0lf\n",name,address,gender,gmail,phone);
-		
-	}
-	
-	fclose(fptr);
-	fclose(fptr1);
-	fptr1=fopen("temp.txt","w");
-	fclose(fptr1);
-	printf("\n\nPress y for menu option.");
-	fflush(stdin);
-	if(getch()=='y'){
-		menu();
-	};
-}
-void exitfun(){
-	system("cls");
-	gotoxy(31,4);
-	printf("\xDB\xDB\xDB\xDB TEAM MEMBERS \xDB\xDB\xDB\xDB");
-	gotoxy(31,6);
-	printf("\xDB SRINIVAS KAPU");
-}
-void password(void){
-	char passwords[20]={"srinivas"};
-	gotoxy(22,2);
-	int j;
-	int z;
-	char name[40]="Authorized Person Only";
-	z=strlen(name);
-	for(j=0;j<=16;j++){
-		Sleep(50);
-		printf("\xDB");
-	}
-	for(j=0;j<=z;j++){
-		Sleep(60);
-		printf(" %c",name[j]);
-	}
-	for(j=0;j<=16;j++){
-		Sleep(50);
-		printf("\xDB");
-	}
-	gotoxy(30,4);
-	printf("Password:");
-	char ch,pass[20];
-	char w='*';
-	int i=0;
-	while(ch!=13){
-		ch=getch();
-		if(ch!=13 && ch!=8){
-			printf("%c",w);
-			pass[i]=ch;
-			i++;
-		}
-			}
-	pass[i]='\0';
-	if(strcmp(pass,passwords)==0){
-		gotoxy(30,6);
-		printf("CORRECT PASSWORD.");
-		Sleep(1000);
-		menu();
-	}
-	else{
-		gotoxy(30,6);
-		printf("You entered the wrong password.");
-		Sleep(700);
-		system("cls");
-		password();
-}
-	
-}
-	
+    /** open the file in binary read and write mode
+    * if the file EMP.DAT already exists then it open that file in read write mode
+    * if the file doesn't exit it simply create a new copy
+    */
+    fp = fopen("EMP.DAT","rb+");
+    if(fp == NULL)
+    {
+        fp = fopen("EMP.DAT","wb+");
+        if(fp == NULL)
+        {
+            printf("Connot open file");
+            exit(1);
+        }
+    }
 
-void menu(){
-	system("cls");
-	gotoxy(30,1);
-	printf("\xB3\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 PHONEBOOK DIRECTORY \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB3");
-	gotoxy(31,4);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB 1.Add New");
-	gotoxy(31,7);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB 2.Search");
-	gotoxy(31,10);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB 3.List");
-	gotoxy(31,13);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB 4.Modify");
-	gotoxy(31,16);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB 5.Delete");
-	gotoxy(31,19);
-	printf("\xB3\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB 6.Exit");
-	switch(getch()){
-		case '1':
-			namefun();
-			break;
-		case '2':
-			searchfun();
-			break;
-		case '3':
-			listfun();
-			break;
-		case '4':
-			modifyfun();
-			break;
-		case '5':
-			deletefun();
-			break;
-		case '6':
-			exitfun();
-			break;
-		default:
-			system("cls");
-			printf("Invalid Enter.");
-			getch();
-}
+    /// sizeo of each record i.e. size of structure variable e
+    recsize = sizeof(e);
+
+    /// infinite loop continues untile the break statement encounter
+    while(1)
+    {
+        system("cls"); ///clear the console window
+        gotoxy(30,10); /// move the cursor to postion 30, 10 from top-left corner
+        printf("1. Add Record"); /// option for add record
+        gotoxy(30,12);
+        printf("2. List Records"); /// option for showing existing record
+        gotoxy(30,14);
+        printf("3. Modify Records"); /// option for editing record
+        gotoxy(30,16);
+        printf("4. Delete Records"); /// option for deleting record
+        gotoxy(30,18);
+        printf("5. Exit"); /// exit from the program
+        gotoxy(30,20);
+        printf("Your Choice: "); /// enter the choice 1, 2, 3, 4, 5
+        fflush(stdin); /// flush the input buffer
+        choice  = getche(); /// get the input from keyboard
+        switch(choice)
+        {
+        case '1':  /// if user press 1
+            system("cls");
+            fseek(fp,0,SEEK_END); /// search the file and move cursor to end of the file
+            /// here 0 indicates moving 0 distance from the end of the file
+
+            another = 'y';
+            while(another == 'y')  /// if user want to add another record
+            {
+                printf("\nEnter name: ");
+                scanf("%s",e.name);
+                printf("\nEnter age: ");
+                scanf("%d", &e.age);
+                printf("\nEnter basic salary: ");
+                scanf("%f", &e.bs);
+
+                fwrite(&e,recsize,1,fp); /// write the record in the file
+
+                printf("\nAdd another record(y/n) ");
+                fflush(stdin);
+                another = getche();
+            }
+            break;
+        case '2':
+            system("cls");
+            rewind(fp); ///this moves file cursor to start of the file
+            while(fread(&e,recsize,1,fp)==1)  /// read the file and fetch the record one record per fetch
+            {
+                printf("\n%s %d %.2f",e.name,e.age,e.bs); /// print the name, age and basic salary
+            }
+            getch();
+            break;
+
+        case '3':  /// if user press 3 then do editing existing record
+            system("cls");
+            another = 'y';
+            while(another == 'y')
+            {
+                printf("Enter the employee name to modify: ");
+                scanf("%s", empname);
+                rewind(fp);
+                while(fread(&e,recsize,1,fp)==1)  /// fetch all record from file
+                {
+                    if(strcmp(e.name,empname) == 0)  ///if entered name matches with that in file
+                    {
+                        printf("\nEnter new name,age and bs: ");
+                        scanf("%s%d%f",e.name,&e.age,&e.bs);
+                        fseek(fp,-recsize,SEEK_CUR); /// move the cursor 1 step back from current position
+                        fwrite(&e,recsize,1,fp); /// override the record
+                        break;
+                    }
+                }
+                printf("\nModify another record(y/n)");
+                fflush(stdin);
+                another = getche();
+            }
+            break;
+        case '4':
+            system("cls");
+            another = 'y';
+            while(another == 'y')
+            {
+                printf("\nEnter name of employee to delete: ");
+                scanf("%s",empname);
+                ft = fopen("Temp.dat","wb");  /// create a intermediate file for temporary storage
+                rewind(fp); /// move record to starting of file
+                while(fread(&e,recsize,1,fp) == 1)  /// read all records from file
+                {
+                    if(strcmp(e.name,empname) != 0)  /// if the entered record match
+                    {
+                        fwrite(&e,recsize,1,ft); /// move all records except the one that is to be deleted to temp file
+                    }
+                }
+                fclose(fp);
+                fclose(ft);
+                remove("EMP.DAT"); /// remove the orginal file
+                rename("Temp.dat","EMP.DAT"); /// rename the temp file to original file name
+                fp = fopen("EMP.DAT", "rb+");
+                printf("Delete another record(y/n)");
+                fflush(stdin);
+                another = getche();
+            }
+            break;
+        case '5':
+            fclose(fp);  /// close the file
+            exit(0); /// exit from the program
+        }
+    }
+    return 0;
 }
