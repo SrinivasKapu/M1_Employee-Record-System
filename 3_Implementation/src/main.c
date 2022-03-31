@@ -1,170 +1,156 @@
-//LEARNPROGRAMO-PROGRAMMING MADE SIMPLE
-#include <stdio.h> ///for input output functions like printf, scanf
-#include <stdlib.h>
-#include <conio.h>
-#include <windows.h> ///for windows related functions (not important)
-#include <string.h>  ///string operations
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
 
-/** List of Global Variable */
-COORD coord = {0,0}; /// top-left corner of window
 
-/**
-    function : gotoxy
-    @param input: x and y coordinates
-    @param output: moves the cursor in specified position of console
-*/
-void gotoxy(int x,int y)
-{
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
-}
+struct user {
+	char phone[50];
+	char ac[50];
+	char password[50];
+	float balance;
+};
 
-/** Main function started */
+int main(){
+	struct user user,usr;
+	char filename[50],phone[50],password[50],phone2[50];
+	FILE *fp,*fptr;
+	int opt,choice;
+	int amount;
+	char cont = 'y';
+	printf("\nWhat do you want to do?");
+	printf("\n\n1.Register your account");
+	printf("\n2.Login to your account");
 
-int main()
-{
-    FILE *fp, *ft; /// file pointers
-    char another, choice;
+	printf("\n\nPlease enter your choice:\t");
+	scanf("%d",&opt);
+	if(opt == 1){
+		system("clear");
+		printf("\nEnter your account number:\t");
+		scanf("%s",user.ac);
+		printf("Enter your phone number:\t");
+		scanf("%s",user.phone);
+		printf("Enter your new password:\t");
+		scanf("%s",user.password);
+		user.balance=0;
+		stpcpy(filename,user.phone);
+		fp=fopen(strcat(filename,".dat"),"w");
+		fwrite(&user,sizeof(user),1,fp);
+		if(fwrite != 0){
+			printf("Succesfully registered");
+		}
+	}
+	else if(opt == 2){
+		system("clear");
+		printf("\nPhone No.:\t");
+		scanf("%s",phone);
+		printf("Password:\t");
+		scanf("%s",password);
+		fp = fopen(strcat(phone,".dat"),"r");
+		if(fp == NULL) printf("Account number not registered");
+		else {
+			fread(&user,sizeof(struct user),1,fp);
+			fclose(fp);
+			if(!strcmp(password,user.password)){
+				while(cont == 'y'){
+				system("clear");
+				printf("\n\tWelcome %s",user.phone);
+				printf("\nPress 1 for balance inquiry");
+				printf("\nPress 2 for adding fund");
+				printf("\nPress 3 for cash withdraw");
+				printf("\nPress 4 for online transfer");
+				printf("\nPress 5 for changing password\n\n");
+				scanf("%d",&choice);
+				switch(choice){
+					case 1:
+						printf("Your current balance is Rs. %.2f",user.balance);
+						break;
 
-    /** structure that represent a employee */
-    struct emp
-    {
-        char name[40]; ///name of employee
-        int age; /// age of employee
-        float bs; /// basic salary of employee
-    };
+					case 2:
+						system("clear");
+						printf("Enter amount to be added:\t");
+						scanf("%d",&amount);
+						user.balance += amount;
+						fp = fopen(phone,"w");
+						fwrite(&user,sizeof(struct user),1,fp);
+						if(fwrite !=0) printf("\n\nYou have depostied Rs.%d",amount);
+						fclose(fp);
+						break;
 
-    struct emp e; /// structure variable creation
-
-    char empname[40]; /// string to store name of the employee
-
-    long int recsize; /// size of each record of employee
-
-    /** open the file in binary read and write mode
-    * if the file EMP.DAT already exists then it open that file in read write mode
-    * if the file doesn't exit it simply create a new copy
-    */
-    fp = fopen("EMP.DAT","rb+");
-    if(fp == NULL)
-    {
-        fp = fopen("EMP.DAT","wb+");
-        if(fp == NULL)
-        {
-            printf("Connot open file");
-            exit(1);
-        }
-    }
-
-    /// sizeo of each record i.e. size of structure variable e
-    recsize = sizeof(e);
-
-    /// infinite loop continues untile the break statement encounter
-    while(1)
-    {
-        system("cls"); ///clear the console window
-        gotoxy(30,10); /// move the cursor to postion 30, 10 from top-left corner
-        printf("1. Add Record"); /// option for add record
-        gotoxy(30,12);
-        printf("2. List Records"); /// option for showing existing record
-        gotoxy(30,14);
-        printf("3. Modify Records"); /// option for editing record
-        gotoxy(30,16);
-        printf("4. Delete Records"); /// option for deleting record
-        gotoxy(30,18);
-        printf("5. Exit"); /// exit from the program
-        gotoxy(30,20);
-        printf("Your Choice: "); /// enter the choice 1, 2, 3, 4, 5
-        fflush(stdin); /// flush the input buffer
-        choice  = getche(); /// get the input from keyboard
-        switch(choice)
-        {
-        case '1':  /// if user press 1
-            system("cls");
-            fseek(fp,0,SEEK_END); /// search the file and move cursor to end of the file
-            /// here 0 indicates moving 0 distance from the end of the file
-
-            another = 'y';
-            while(another == 'y')  /// if user want to add another record
-            {
-                printf("\nEnter name: ");
-                scanf("%s",e.name);
-                printf("\nEnter age: ");
-                scanf("%d", &e.age);
-                printf("\nEnter basic salary: ");
-                scanf("%f", &e.bs);
-
-                fwrite(&e,recsize,1,fp); /// write the record in the file
-
-                printf("\nAdd another record(y/n) ");
-                fflush(stdin);
-                another = getche();
-            }
-            break;
-        case '2':
-            system("cls");
-            rewind(fp); ///this moves file cursor to start of the file
-            while(fread(&e,recsize,1,fp)==1)  /// read the file and fetch the record one record per fetch
-            {
-                printf("\n%s %d %.2f",e.name,e.age,e.bs); /// print the name, age and basic salary
-            }
-            getch();
-            break;
-
-        case '3':  /// if user press 3 then do editing existing record
-            system("cls");
-            another = 'y';
-            while(another == 'y')
-            {
-                printf("Enter the employee name to modify: ");
-                scanf("%s", empname);
-                rewind(fp);
-                while(fread(&e,recsize,1,fp)==1)  /// fetch all record from file
-                {
-                    if(strcmp(e.name,empname) == 0)  ///if entered name matches with that in file
-                    {
-                        printf("\nEnter new name,age and bs: ");
-                        scanf("%s%d%f",e.name,&e.age,&e.bs);
-                        fseek(fp,-recsize,SEEK_CUR); /// move the cursor 1 step back from current position
-                        fwrite(&e,recsize,1,fp); /// override the record
-                        break;
-                    }
-                }
-                printf("\nModify another record(y/n)");
-                fflush(stdin);
-                another = getche();
-            }
-            break;
-        case '4':
-            system("cls");
-            another = 'y';
-            while(another == 'y')
-            {
-                printf("\nEnter name of employee to delete: ");
-                scanf("%s",empname);
-                ft = fopen("Temp.dat","wb");  /// create a intermediate file for temporary storage
-                rewind(fp); /// move record to starting of file
-                while(fread(&e,recsize,1,fp) == 1)  /// read all records from file
-                {
-                    if(strcmp(e.name,empname) != 0)  /// if the entered record match
-                    {
-                        fwrite(&e,recsize,1,ft); /// move all records except the one that is to be deleted to temp file
-                    }
-                }
-                fclose(fp);
-                fclose(ft);
-                remove("EMP.DAT"); /// remove the orginal file
-                rename("Temp.dat","EMP.DAT"); /// rename the temp file to original file name
-                fp = fopen("EMP.DAT", "rb+");
-                printf("Delete another record(y/n)");
-                fflush(stdin);
-                another = getche();
-            }
-            break;
-        case '5':
-            fclose(fp);  /// close the file
-            exit(0); /// exit from the program
-        }
-    }
-    return 0;
+					case 3:
+						system("clear");
+						printf("Enter withdrawl amount:\t");
+						scanf("%d",&amount);
+						if(amount % 500 != 0) printf("\nSorry amount should be multiple of 500");
+						else if(amount>user.balance) printf("\nSorry insufficeint balance");
+						else {
+							user.balance -= amount;
+						fp = fopen(phone,"w");
+						fwrite(&user,sizeof(struct user),1,fp);
+						if(fwrite !=0) printf("\n\nYou have withdrawn Rs.%d",amount);
+						fclose(fp);
+						}
+						break;
+					
+					case 4:
+						printf("Please enter the phone number to trasnfer balance:\t");
+						scanf("%s",phone);
+						printf("Enter the amount to transfer:\t");
+						scanf("%d",&amount);
+						if(amount > user.balance) printf("\nSorry insufficent balance");
+						else {
+							fptr = fopen(strcat(phone,".dat"),"r");
+							if(fptr==NULL) printf("Sorry number is not registered");
+							else {
+								fread(&usr,sizeof(struct user),1,fptr);
+								fclose(fptr);
+							
+								usr.balance += amount;
+								
+								fptr = fopen(phone,"w");
+								fwrite(&usr,sizeof(struct user),1,fptr);
+								if(fwrite != 0){
+								// 	printf("ACcount:%s",usr.ac);
+								// printf("\npassword%s",usr.password);
+								// printf("\nphone%s",usr.phone);
+								// printf("\nbalance%f",usr.balance);
+									printf("Your trasfer is completed. You have trasnfered Rs.%d to %s",amount,usr.phone);
+									fclose(fptr);
+									user.balance -= amount;
+									strcpy(filename,user.phone);
+									fp = fopen(strcat(filename,".dat"),"w");
+									fwrite(&user,sizeof(struct user),1,fp);
+									fclose(fp);
+								}
+							}
+						}
+						break;
+					case 5:
+						printf("\n\nPlease enter your old password:\t");
+						scanf("%s",password);
+						if(!strcmp(password,user.password)){
+							printf("\n\nPlease enter your new password:\t");
+							scanf("%s",password);
+							strcpy(user.password,password);
+							strcpy(filename,user.phone);
+							fp = fopen(strcat(filename,".dat"),"w");
+							fwrite(&user,sizeof(struct user),1,fp);
+							fclose(fp);	
+							printf("\nPassword succesfullly changed");
+						}else printf("\nSorry your password is wrong");
+					
+					default:
+					break;
+				}//switch ends here
+				printf("\n\nDo you want to continue?[y/n]:\t");
+				scanf("%s",&cont);
+				}
+			}
+			else {
+				printf("Invalid password");
+			}	
+		}
+		printf("\n\n***Thank you for banking with ADV. bank***\n\n");
+	}
+	
+	return 0;
 }
