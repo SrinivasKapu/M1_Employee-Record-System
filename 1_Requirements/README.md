@@ -38,4 +38,3 @@ This issue is in all parts of the world where  Industries there.
 By creating a system which will provide all the functionalities required, to store the employee data in an industries.
 
 
-
