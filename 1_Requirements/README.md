@@ -11,9 +11,13 @@
 
 # Features of Employee Record System 
 Add Employee – For the add employee, the user can add new employee information.
+
 List Employee – For the List employee, the user can view all the new employee added.
+
 Modify Data – For the modify the user can modify the data of the employee.
+
 Delete Employee – For the delete employee, the user can delete their own information.
+
 Exit – For the exit, the user can also exit in the system.
 
 
