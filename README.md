@@ -7,3 +7,6 @@
 
 
 [![Code Quality - Cppcheck](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/c-cpp.yml)
+
+
+[![Analysis](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/Analysis.yml/badge.svg)](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/Analysis.yml)
