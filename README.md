@@ -10,3 +10,5 @@
 
 
 [![Analysis](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/Analysis.yml/badge.svg)](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/Analysis.yml)
+
+[![Bulid CI - windows](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/Windows.yml/badge.svg)](https://github.com/SrinivasKapu/M1_Employee-Record-System/actions/workflows/Windows.yml)
